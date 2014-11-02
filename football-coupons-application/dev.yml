@@ -1,0 +1,43 @@
+################################################################
+### NOTE! If entries are added to or removed from this file  ###
+### make sure to update corresponding Chef template and       ###
+### default files, and config files for _all_ environments.  ###
+################################################################
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8050
+
+  adminConnectors:
+    - type: http
+      port: 9050
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+  # Logger-specific levels.
+  loggers:
+    org.jon.ivmark: DEBUG
+
+  appenders:
+    - type: console
+      threshold: ALL
+
+    - type: file
+      threshold: OFF
+      currentLogFilename: ./FootballCoupons.log
+      archivedLogFilenamePattern: ./FootballCoupons-%d.log.gz
+      archivedFileCount: 5
+      timeZone: UTC
+
+    - type: json
+      threshold: ALL
+      timestampFormat: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+      currentLogFilename: ./FootballCoupons.log.json
+      archivedLogFilenamePattern: ./FootballCoupons-%d.log.json.gz
+      archivedFileCount: 5
+
+wirelogging: false
