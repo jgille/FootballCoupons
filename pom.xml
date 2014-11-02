@@ -10,7 +10,6 @@
 
     <modules>
         <module>football-coupons-api</module>
-        <module>football-coupons-client</module>
         <module>football-coupons-application</module>
     </modules>
 

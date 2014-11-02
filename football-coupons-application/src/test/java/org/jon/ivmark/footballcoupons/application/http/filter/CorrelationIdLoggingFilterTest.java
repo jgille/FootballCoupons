@@ -1,8 +1,5 @@
 package org.jon.ivmark.footballcoupons.application.http.filter;
 
-import static org.jon.ivmark.footballcoupons.application.http.filter.CorrelationIdLoggingFilter.CorrelationId;
-import static org.jon.ivmark.footballcoupons.application.http.filter.CorrelationIdLoggingFilter.CORRELATION_ID_HEADER;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -17,6 +14,8 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
+import static org.jon.ivmark.footballcoupons.application.http.filter.CorrelationIdLoggingFilter.CORRELATION_ID_HEADER;
+import static org.jon.ivmark.footballcoupons.application.http.filter.CorrelationIdLoggingFilter.CorrelationId;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doAnswer;

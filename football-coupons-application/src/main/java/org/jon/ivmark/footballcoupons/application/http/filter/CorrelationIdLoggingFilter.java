@@ -1,7 +1,6 @@
 package org.jon.ivmark.footballcoupons.application.http.filter;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.slf4j.MDC;
 
 import javax.servlet.*;

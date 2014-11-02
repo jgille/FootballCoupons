@@ -2,24 +2,28 @@ package org.jon.ivmark.footballcoupons.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcabi.manifests.Manifests;
-
+import com.sun.jersey.api.container.filter.LoggingFilter;
+import io.dropwizard.Application;
+import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.jetty.setup.ServletEnvironment;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 import org.jon.ivmark.footballcoupons.application.configuration.FootballCouponsConfiguration;
-import org.jon.ivmark.footballcoupons.application.coupons.converters.CouponDtoConverter;
-import org.jon.ivmark.footballcoupons.application.coupons.infrastructure.InMemoryCouponRepository;
-import org.jon.ivmark.footballcoupons.application.coupons.resources.CouponResource;
-import org.jon.ivmark.footballcoupons.application.greeting.resources.GreetingResource;
-import org.jon.ivmark.footballcoupons.application.greeting.services.GreetingService;
+import org.jon.ivmark.footballcoupons.application.game.converters.CouponDtoConverter;
+import org.jon.ivmark.footballcoupons.application.game.domain.GameRepository;
+import org.jon.ivmark.footballcoupons.application.game.domain.GameService;
+import org.jon.ivmark.footballcoupons.application.game.domain.event.EventLog;
+import org.jon.ivmark.footballcoupons.application.game.domain.event.GameEvent;
+import org.jon.ivmark.footballcoupons.application.game.infrastructure.CachingEventBasedGameRepository;
+import org.jon.ivmark.footballcoupons.application.game.infrastructure.InMemoryGameRepository;
+import org.jon.ivmark.footballcoupons.application.game.infrastructure.event.FileBasedEventLog;
+import org.jon.ivmark.footballcoupons.application.game.resources.CouponResource;
+import org.jon.ivmark.footballcoupons.application.game.service.GameServiceImpl;
 import org.jon.ivmark.footballcoupons.application.health.SimpleHealthCheck;
 import org.jon.ivmark.footballcoupons.application.http.InfoServlet;
 import org.jon.ivmark.footballcoupons.application.http.filter.CorrelationIdLoggingFilter;
 
-import com.sun.jersey.api.container.filter.LoggingFilter;
-import io.dropwizard.Application;
-import io.dropwizard.jersey.setup.JerseyEnvironment;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.jetty.setup.ServletEnvironment;
-
+import java.io.File;
 import java.util.Map;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
@@ -47,11 +51,12 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
         JerseyEnvironment jersey = environment.jersey();
         configureWirelogging(configuration, jersey);
 
-        GreetingService service = new GreetingService();
-        jersey.register(new GreetingResource(service));
-
-
-        jersey.register(new CouponResource(new CouponDtoConverter(), new InMemoryCouponRepository()));
+        EventLog<GameEvent> eventLog = new FileBasedEventLog<>(new File(configuration.games.dataDir, "events"),
+                                                               environment.getObjectMapper());
+        InMemoryGameRepository cache = new InMemoryGameRepository();
+        GameRepository gameRepository = new CachingEventBasedGameRepository(cache, eventLog);
+        GameService gameService = new GameServiceImpl(gameRepository);
+        jersey.register(new CouponResource(new CouponDtoConverter(), gameService));
 
         environment.admin().addServlet("info", new InfoServlet()).addMapping("/info");
 
