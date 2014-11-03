@@ -18,6 +18,7 @@ import org.jon.ivmark.footballcoupons.application.game.infrastructure.CachingEve
 import org.jon.ivmark.footballcoupons.application.game.infrastructure.InMemoryGameRepository;
 import org.jon.ivmark.footballcoupons.application.game.infrastructure.event.FileBasedEventLog;
 import org.jon.ivmark.footballcoupons.application.game.resources.CouponResource;
+import org.jon.ivmark.footballcoupons.application.game.resources.GameResource;
 import org.jon.ivmark.footballcoupons.application.game.service.GameServiceImpl;
 import org.jon.ivmark.footballcoupons.application.health.SimpleHealthCheck;
 import org.jon.ivmark.footballcoupons.application.http.InfoServlet;
@@ -56,6 +57,8 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
         InMemoryGameRepository cache = new InMemoryGameRepository();
         GameRepository gameRepository = new CachingEventBasedGameRepository(cache, eventLog);
         GameService gameService = new GameServiceImpl(gameRepository);
+
+        jersey.register(new GameResource(gameService));
         jersey.register(new CouponResource(new CouponDtoConverter(), gameService));
 
         environment.admin().addServlet("info", new InfoServlet()).addMapping("/info");

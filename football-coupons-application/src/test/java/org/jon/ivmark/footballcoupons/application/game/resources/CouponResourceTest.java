@@ -5,7 +5,7 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.jon.ivmark.footballcoupons.api.coupons.NewCouponDto;
+import org.jon.ivmark.footballcoupons.api.game.NewCouponDto;
 import org.jon.ivmark.footballcoupons.application.game.converters.CouponDtoConverter;
 import org.jon.ivmark.footballcoupons.application.game.domain.GameService;
 import org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Coupon;
@@ -44,12 +44,13 @@ public class CouponResourceTest {
         NewCouponDto newCouponDto = validNewCouponDto();
         when(couponDtoConverter.asCoupon(newCouponDto)).thenReturn(coupon);
 
-        ClientResponse response = resources.client().resource("/game1/coupons").type(APPLICATION_JSON_TYPE)
+        ClientResponse response = resources.client().resource("/games/game1/coupons").type(APPLICATION_JSON_TYPE)
                                      .post(ClientResponse.class, newCouponDto);
 
         assertThat(response.getStatus(), is(HttpStatus.CREATED_201));
         assertThat(response.getLocation(), notNullValue());
         verify(gameService).addCoupon(gameId, coupon);
+
     }
 
     private NewCouponDto validNewCouponDto() {

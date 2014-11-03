@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.DomainEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.EventLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +17,8 @@ public class FileBasedEventLog<T extends  DomainEvent> implements EventLog<T> {
     private final File directory;
 
     private final ObjectMapper objectMapper;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public FileBasedEventLog(File directory, ObjectMapper objectMapper) {
         this.directory = directory;
@@ -29,11 +33,13 @@ public class FileBasedEventLog<T extends  DomainEvent> implements EventLog<T> {
     }
 
     private void writeAndPublish(T event) {
+        logger.info("Writing event of type {} for aggregate with id {}", event.getEventType().name(), event.getAggregateId());
         try {
             FileUtils.writeStringToFile(eventFile(event), serialize(event));
         } catch (IOException e) {
             throw new EventLogException("Failed to write event: " + event, e);
         }
+        logger.info("Event written successfully");
     }
 
     File eventFile(T event) {

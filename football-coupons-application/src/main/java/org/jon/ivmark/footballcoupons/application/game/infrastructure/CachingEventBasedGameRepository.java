@@ -28,6 +28,7 @@ public class CachingEventBasedGameRepository implements GameRepository {
     public void saveGame(Game game) {
         List<GameEvent> uncommitedEvents = game.getUncommitedEvents();
         eventLog.writeEvents(uncommitedEvents);
+        game.commit();
         cache.saveGame(game);
     }
 

@@ -1,4 +1,4 @@
-package org.jon.ivmark.footballcoupons.api.coupons;
+package org.jon.ivmark.footballcoupons.api.game;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;

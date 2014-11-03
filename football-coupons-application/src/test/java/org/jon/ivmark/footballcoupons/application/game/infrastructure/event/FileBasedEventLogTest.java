@@ -1,5 +1,6 @@
 package org.jon.ivmark.footballcoupons.application.game.infrastructure.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.AbstractDomainEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.DomainEventType;
@@ -33,9 +34,10 @@ public class FileBasedEventLogTest {
 
     @Test
     public void writeSingleEvent() throws IOException {
+        String aggregateId = "test";
         long timestamp = 1000L;
         TestEventType eventType = TestEventType.EVENT_TYPE_1;
-        TestEvent event = new TestEvent(eventType, timestamp);
+        TestEvent event = new TestEvent(aggregateId, eventType, timestamp);
 
         eventLog.writeEvents(Collections.singletonList(event));
 
@@ -46,14 +48,10 @@ public class FileBasedEventLogTest {
 
     private static class TestEvent extends AbstractDomainEvent<TestEventType> {
 
-        private TestEvent() {
-
-        }
-
-        private TestEvent(TestEventType eventType, long timestamp) {
-            this.eventType = eventType;
-            this.timestamp = timestamp;
-            this.aggregateId = "test";
+        private TestEvent(@JsonProperty("aggregate_id") String aggregateId,
+                          @JsonProperty("event_type") TestEventType eventType,
+                          @JsonProperty("timestamp") long timestamp) {
+            super(aggregateId, eventType, timestamp);
         }
 
     }

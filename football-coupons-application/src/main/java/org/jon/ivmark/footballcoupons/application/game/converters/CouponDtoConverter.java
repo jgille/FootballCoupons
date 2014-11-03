@@ -1,6 +1,6 @@
 package org.jon.ivmark.footballcoupons.application.game.converters;
 
-import org.jon.ivmark.footballcoupons.api.coupons.NewCouponDto;
+import org.jon.ivmark.footballcoupons.api.game.NewCouponDto;
 import org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Coupon;
 
 import static org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Coupon.newCoupon;

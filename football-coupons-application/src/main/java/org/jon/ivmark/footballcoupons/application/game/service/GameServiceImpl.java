@@ -16,9 +16,16 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public void createGame(GameId gameId, String gameName) {
+        Game game = Game.createGame(gameId, gameName);
+        gameRepository.saveGame(game);
+    }
+
+    @Override
     public synchronized void addCoupon(GameId gameId, Coupon coupon) {
         Game game = gameRepository.getGame(gameId);
         game.addCoupon(coupon);
         gameRepository.saveGame(game);
     }
+
 }
