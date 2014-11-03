@@ -6,7 +6,6 @@ import org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Coupon;
 import org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Game;
 import org.jon.ivmark.footballcoupons.application.game.domain.valueobjects.GameId;
 
-// TODO: Avoid synchronization
 public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
@@ -22,7 +21,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public synchronized void addCoupon(GameId gameId, Coupon coupon) {
+    public void addCoupon(GameId gameId, Coupon coupon) {
         Game game = gameRepository.getGame(gameId);
         game.addCoupon(coupon);
         gameRepository.saveGame(game);
