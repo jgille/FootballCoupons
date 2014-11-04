@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcabi.manifests.Manifests;
 import com.sun.jersey.api.container.filter.LoggingFilter;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.setup.Bootstrap;
@@ -39,8 +40,8 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
     }
 
     @Override
-    public void initialize(Bootstrap<FootballCouponsConfiguration> configuration) {
-
+    public void initialize(Bootstrap<FootballCouponsConfiguration> bootstrap) {
+        bootstrap.addBundle(new AssetsBundle("/assets/", "/"));
     }
 
     @Override
@@ -50,6 +51,9 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
         addCustomFilters(environment);
 
         JerseyEnvironment jersey = environment.jersey();
+
+        jersey.setUrlPattern("/api/*");
+
         configureWirelogging(configuration, jersey);
 
         EventLog<GameEvent> eventLog = new FileBasedEventLog<>(new File(configuration.games.dataDir, "events"),
