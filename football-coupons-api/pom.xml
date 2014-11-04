@@ -9,6 +9,5 @@
     </parent>
 
     <artifactId>football-coupons-api</artifactId>
-    <version>${project.parent.version}</version>
 
 </project>

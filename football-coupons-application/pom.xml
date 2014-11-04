@@ -9,10 +9,11 @@
     </parent>
 
     <artifactId>football-coupons-application</artifactId>
-    <version>${project.parent.version}</version>
 
     <properties>
         <mainClass>org.jon.ivmark.footballcoupons.application.FootballCouponsApplication</mainClass>
+        <phantomjsdriver.version>1.1.0</phantomjsdriver.version>
+        <fluentlenium-core.version>0.10.2</fluentlenium-core.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,20 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.fluentlenium</groupId>
+            <artifactId>fluentlenium-core</artifactId>
+            <version>${fluentlenium-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.detro.ghostdriver</groupId>
+            <artifactId>phantomjsdriver</artifactId>
+            <version>${phantomjsdriver.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
