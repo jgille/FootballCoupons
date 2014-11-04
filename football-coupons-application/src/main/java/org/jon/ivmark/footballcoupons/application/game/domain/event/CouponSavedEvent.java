@@ -12,6 +12,7 @@ public class CouponSavedEvent extends AbstractDomainEvent<GameEventType> impleme
     private final CouponId couponId;
     private final String couponName;
     private final DateTime couponMustBeSubmittedBefore;
+    // TODO: Don't use matches directly
     private final List<Match> matches;
 
     public CouponSavedEvent(
