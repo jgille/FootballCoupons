@@ -36,7 +36,7 @@ public class CouponResource {
                                  @Valid NewCouponDto newCouponDto) throws URISyntaxException {
         logger.info("Creating coupon named '{}' for game with id '{}'", newCouponDto.coupon_name, gameId.getValue());
         Coupon coupon = couponDtoConverter.asCoupon(newCouponDto);
-        gameService.addCoupon(gameId, coupon);
+        gameService.saveCoupon(gameId, coupon);
         String couponId = coupon.getCouponId().getValue();
         logger.info("Coupon created with id '{}'", couponId);
         return Response.created(new URI(couponId)).build();

@@ -1,10 +1,12 @@
 package org.jon.ivmark.footballcoupons.application.game.domain.event;
 
+import org.joda.time.DateTime;
+
 public interface DomainEvent<T extends DomainEventType> {
 
     String getAggregateId();
 
-    long getTimestamp();
+    DateTime getTimestamp();
 
      T getEventType();
 }

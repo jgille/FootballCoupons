@@ -55,6 +55,7 @@ public class FileBasedEventLog<T extends  DomainEvent> implements EventLog<T> {
     }
 
     private String eventFileName(T event) {
-        return String.format("%d-%s.json", event.getTimestamp(), event.getEventType().name());
+        return String.format("%d-%s.json", event.getTimestamp().toDate().getTime(),
+                             event.getEventType().name());
     }
 }

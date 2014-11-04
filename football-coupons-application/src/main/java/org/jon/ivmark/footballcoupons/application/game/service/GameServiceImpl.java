@@ -22,9 +22,9 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public synchronized void addCoupon(GameId gameId, Coupon coupon) {
+    public synchronized void saveCoupon(GameId gameId, Coupon coupon) {
         Game game = gameRepository.getGame(gameId);
-        game.addCoupon(coupon);
+        game.saveCoupon(coupon);
         gameRepository.saveGame(game);
     }
 

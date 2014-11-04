@@ -2,6 +2,9 @@ package org.jon.ivmark.footballcoupons.application.game.infrastructure.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.AbstractDomainEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.DomainEventType;
 import org.junit.Before;
@@ -13,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -29,13 +33,15 @@ public class FileBasedEventLogTest {
     public void init() throws IOException {
         this.dir = temporaryFolder.newFolder();
         this.objectMapper = new ObjectMapper();
+        objectMapper.disable(WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.registerModule(new JodaModule());
         this.eventLog = new FileBasedEventLog<>(dir, objectMapper);
     }
 
     @Test
     public void writeSingleEvent() throws IOException {
         String aggregateId = "test";
-        long timestamp = 1000L;
+        DateTime timestamp = DateTime.now(DateTimeZone.UTC);
         TestEventType eventType = TestEventType.EVENT_TYPE_1;
         TestEvent event = new TestEvent(aggregateId, eventType, timestamp);
 
@@ -50,7 +56,7 @@ public class FileBasedEventLogTest {
 
         private TestEvent(@JsonProperty("aggregate_id") String aggregateId,
                           @JsonProperty("event_type") TestEventType eventType,
-                          @JsonProperty("timestamp") long timestamp) {
+                          @JsonProperty("timestamp") DateTime timestamp) {
             super(aggregateId, eventType, timestamp);
         }
 

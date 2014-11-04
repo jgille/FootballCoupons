@@ -2,5 +2,5 @@ package org.jon.ivmark.footballcoupons.application.game.domain.event;
 
 public enum GameEventType implements DomainEventType {
 
-    GAME_CREATED
+    COUPON_SAVED, GAME_CREATED
 }

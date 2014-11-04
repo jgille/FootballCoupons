@@ -49,7 +49,7 @@ public class CouponResourceTest {
 
         assertThat(response.getStatus(), is(HttpStatus.CREATED_201));
         assertThat(response.getLocation(), notNullValue());
-        verify(gameService).addCoupon(gameId, coupon);
+        verify(gameService).saveCoupon(gameId, coupon);
 
     }
 

@@ -1,6 +1,9 @@
 package org.jon.ivmark.footballcoupons.application.game.domain.aggregates;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.jon.ivmark.footballcoupons.application.domain.aggregate.AggregateRoot;
+import org.jon.ivmark.footballcoupons.application.game.domain.event.CouponSavedEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.GameCreatedEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.GameEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.valueobjects.GameId;
@@ -12,16 +15,21 @@ import java.util.List;
 public class Game extends AggregateRoot<GameId> {
 
     private final String gameName;
+    private final List<Coupon> coupons;
+
     private final List<GameEvent> uncommitedEvents;
 
     public Game(GameId gameId, String gameName) {
         super(gameId);
         this.gameName = gameName;
-        this.uncommitedEvents = Collections.synchronizedList(new ArrayList<GameEvent>());
+        this.uncommitedEvents = new ArrayList<>();
+        this.coupons = new ArrayList<>();
     }
 
-    public void addCoupon(Coupon coupon) {
-        // TODO: Implement
+    public void saveCoupon(Coupon coupon) {
+        coupons.add(coupon);
+        addEvent(new CouponSavedEvent(getGameId(), coupon.getCouponId(), now(), coupon.getCouponName(),
+                                      coupon.getCouponMustBeSubmittedBefore(), coupon.getMatches()));
     }
 
     public GameId getGameId() {
@@ -38,7 +46,7 @@ public class Game extends AggregateRoot<GameId> {
 
     public static Game createGame(GameId gameId, String gameName) {
         Game game = new Game(gameId, gameName);
-        game.addEvent(new GameCreatedEvent(gameId.getValue(), now(), gameName));
+        game.addEvent(new GameCreatedEvent(gameId, now(), gameName));
         return game;
     }
 
@@ -46,8 +54,8 @@ public class Game extends AggregateRoot<GameId> {
         uncommitedEvents.add(gameEvent);
     }
 
-    private static long now() {
+    private static DateTime now() {
         // TODO: Use timeservice?
-        return System.currentTimeMillis();
+        return DateTime.now(DateTimeZone.UTC);
     }
 }
