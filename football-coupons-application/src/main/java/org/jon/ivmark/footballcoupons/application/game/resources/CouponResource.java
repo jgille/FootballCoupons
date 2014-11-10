@@ -1,6 +1,8 @@
 package org.jon.ivmark.footballcoupons.application.game.resources;
 
+import io.dropwizard.auth.Auth;
 import org.jon.ivmark.footballcoupons.api.game.NewCouponDto;
+import org.jon.ivmark.footballcoupons.application.auth.dto.User;
 import org.jon.ivmark.footballcoupons.application.game.converters.CouponDtoConverter;
 import org.jon.ivmark.footballcoupons.application.game.domain.GameService;
 import org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Coupon;
@@ -32,13 +34,21 @@ public class CouponResource {
     }
 
     @POST
-    public Response createCoupon(@PathParam("gameId") GameId gameId,
+    public Response createCoupon(@Auth User user,
+                                 @PathParam("gameId") GameId gameId,
                                  @Valid NewCouponDto newCouponDto) throws URISyntaxException {
+        assertIsAdminUser(user);
         logger.info("Creating coupon named '{}' for game with id '{}'", newCouponDto.coupon_name, gameId.getValue());
         Coupon coupon = couponDtoConverter.asCoupon(newCouponDto);
         gameService.saveCoupon(gameId, coupon);
         String couponId = coupon.getCouponId().getValue();
         logger.info("Coupon created with id '{}'", couponId);
         return Response.created(new URI(couponId)).build();
+    }
+
+    private void assertIsAdminUser(User user) {
+        if (!user.isAdmin()) {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
     }
 }

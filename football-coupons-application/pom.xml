@@ -12,6 +12,7 @@
 
     <properties>
         <mainClass>org.jon.ivmark.footballcoupons.application.FootballCouponsApplication</mainClass>
+        <stormpath.version>1.0.RC2</stormpath.version>
         <phantomjsdriver.version>1.1.0</phantomjsdriver.version>
         <fluentlenium-core.version>0.10.2</fluentlenium-core.version>
     </properties>
@@ -27,6 +28,31 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-assets</artifactId>
             <version>${dropwizard.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-auth</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-api</artifactId>
+            <version>${stormpath.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-impl</artifactId>
+            <version>${stormpath.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-httpclient</artifactId>
+            <version>${stormpath.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

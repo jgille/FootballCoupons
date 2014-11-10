@@ -2,13 +2,18 @@ package org.jon.ivmark.footballcoupons.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcabi.manifests.Manifests;
+import com.stormpath.sdk.impl.jwt.signer.DefaultJwtSigner;
 import com.sun.jersey.api.container.filter.LoggingFilter;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.oauth.OAuthProvider;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.jon.ivmark.footballcoupons.application.auth.jwt.JwtAuthenticator;
+import org.jon.ivmark.footballcoupons.application.auth.jwt.JwtService;
+import org.jon.ivmark.footballcoupons.application.auth.resources.LoginResource;
 import org.jon.ivmark.footballcoupons.application.configuration.FootballCouponsConfiguration;
 import org.jon.ivmark.footballcoupons.application.game.converters.CouponDtoConverter;
 import org.jon.ivmark.footballcoupons.application.game.domain.GameRepository;
@@ -54,6 +59,8 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
 
         jersey.setUrlPattern("/api/*");
 
+        setupAuth(configuration, environment);
+
         configureWirelogging(configuration, jersey);
 
         EventLog<GameEvent> eventLog = new FileBasedEventLog<>(new File(configuration.games.dataDir, "events"),
@@ -68,6 +75,19 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
         environment.admin().addServlet("info", new InfoServlet()).addMapping("/info");
 
         environment.healthChecks().register("simple", new SimpleHealthCheck());
+    }
+
+    private void setupAuth(FootballCouponsConfiguration configuration, Environment environment) {
+        DefaultJwtSigner signer = new DefaultJwtSigner(configuration.jwtSecret);
+        ObjectMapper objectMapper = environment.getObjectMapper();
+
+        JwtAuthenticator jwtAuthenticator = new JwtAuthenticator(signer, objectMapper);
+        environment.jersey().register(new OAuthProvider<>(jwtAuthenticator, "realm"));
+
+        // TODO: Setup properly
+        com.stormpath.sdk.application.Application stormpathApplication = null;
+        JwtService jwtService = new JwtService(signer, objectMapper);
+        environment.jersey().register(new LoginResource(stormpathApplication, jwtService));
     }
 
     @Override

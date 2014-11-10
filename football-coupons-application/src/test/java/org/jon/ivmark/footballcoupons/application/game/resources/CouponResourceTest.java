@@ -1,63 +1,77 @@
 package org.jon.ivmark.footballcoupons.application.game.resources;
 
-import com.sun.jersey.api.client.ClientResponse;
-import io.dropwizard.testing.junit.ResourceTestRule;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jon.ivmark.footballcoupons.api.game.NewCouponDto;
+import org.jon.ivmark.footballcoupons.application.auth.dto.User;
 import org.jon.ivmark.footballcoupons.application.game.converters.CouponDtoConverter;
 import org.jon.ivmark.footballcoupons.application.game.domain.GameService;
 import org.jon.ivmark.footballcoupons.application.game.domain.aggregates.Coupon;
 import org.jon.ivmark.footballcoupons.application.game.domain.valueobjects.GameId;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import java.net.URISyntaxException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.contains;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CouponResourceTest {
 
-    private static final GameService gameService = mock(GameService.class);
+    @Mock
+    private GameService gameService;
 
-    private static CouponDtoConverter couponDtoConverter = mock(CouponDtoConverter.class);
+    @Mock
+    private CouponDtoConverter couponDtoConverter;
 
-    @ClassRule
-    public static final ResourceTestRule resources = ResourceTestRule.builder()
-                                                                     .addResource(new CouponResource(couponDtoConverter, gameService))
-                                                                     .build();
+    private CouponResource resource;
 
     @Before
-    public void setup() {
-        reset(gameService);
-        reset(couponDtoConverter);
+    public void init() {
+        resource = new CouponResource(couponDtoConverter, gameService);
     }
 
     @Test
-    public void createValidCoupon() {
+    public void createValidCoupon() throws URISyntaxException {
         GameId gameId = new GameId("game1");
         Coupon coupon = Coupon.newCoupon("test", DateTime.now(), 10);
-        NewCouponDto newCouponDto = validNewCouponDto();
+        NewCouponDto newCouponDto = asCouponDto(coupon);
         when(couponDtoConverter.asCoupon(newCouponDto)).thenReturn(coupon);
 
-        ClientResponse response = resources.client().resource("/games/game1/coupons").type(APPLICATION_JSON_TYPE)
-                                     .post(ClientResponse.class, newCouponDto);
+        User user = new User("Test", true);
+
+        Response response = resource.createCoupon(user, gameId, newCouponDto);
 
         assertThat(response.getStatus(), is(HttpStatus.CREATED_201));
-        assertThat(response.getLocation(), notNullValue());
         verify(gameService).saveCoupon(gameId, coupon);
-
     }
 
-    private NewCouponDto validNewCouponDto() {
+    @Test(expected = WebApplicationException.class)
+    public void assertThatOnlyAdminUserCanCreateCoupon() throws URISyntaxException {
+        GameId gameId = new GameId("game1");
+        Coupon coupon = Coupon.newCoupon("test", DateTime.now(), 10);
+        NewCouponDto newCouponDto = asCouponDto(coupon);
+
+        User user = new User("Test", false);
+
+        resource.createCoupon(user, gameId, newCouponDto);
+    }
+
+    private NewCouponDto asCouponDto(Coupon coupon) {
         NewCouponDto newCouponDto = new NewCouponDto();
-        newCouponDto.coupon_name = "test";
-        newCouponDto.number_of_matches = 10;
-        newCouponDto.coupon_must_be_submitted_before = DateTime.now(DateTimeZone.UTC);
+        newCouponDto.coupon_name = coupon.getCouponName();
+        newCouponDto.number_of_matches = coupon.getMatches().size();
+        newCouponDto.coupon_must_be_submitted_before = coupon.getCouponMustBeSubmittedBefore();
         return newCouponDto;
     }
 

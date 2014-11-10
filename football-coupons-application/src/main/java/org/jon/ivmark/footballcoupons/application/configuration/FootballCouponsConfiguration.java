@@ -9,4 +9,7 @@ public class FootballCouponsConfiguration extends Configuration {
 
     @NotNull
     public GamesConfiguration games;
+
+    @NotNull
+    public String jwtSecret;
 }
