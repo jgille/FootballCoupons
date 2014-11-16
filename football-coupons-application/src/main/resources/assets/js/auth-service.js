@@ -51,7 +51,7 @@ app.factory('authService', ['$cookies', function ($cookies) {
             var json = JSON.parse(decodeBase64(token.split('.')[1]));
             return { username: json.username, isAdminUser: json.is_admin_user, isLoggedIn: true};
         } else {
-            return { isLoggedIn: false };
+            return { isLoggedIn: false, isAdminUser: false };
         }
     }
 

@@ -7,6 +7,10 @@ app.config(function($routeProvider) {
             templateUrl : 'view/home.html',
             controller  : 'FootballCouponsController'
         })
+        .when('/create-game', {
+            templateUrl : 'view/create-game.html',
+            controller  : 'FootballCouponsAdminController'
+        })
 
 });
 
