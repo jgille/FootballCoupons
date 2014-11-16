@@ -30,6 +30,11 @@ app.controller('FootballCouponsAdminController', ['$scope', '$http',
             game_name: "Nytt spel"
         };
 
+        $scope.allGameDescriptions = [
+            { game_id: "123", game_name: "Spel 1" },
+            { game_id: "1234", game_name: "Spel 2" }
+        ];
+
         $scope.createGame = function () {
             $http.post('/api/games', $scope.newGame)
                 .success(function () {
@@ -43,6 +48,12 @@ app.controller('FootballCouponsAdminController', ['$scope', '$http',
 
     }]
 );
+
+app.controller('GameDetailController', ['$scope', '$routeParams',
+    function($scope, $routeParams) {
+        $scope.game_id = $routeParams.game_id;
+    }]);
+
 
 app.factory('authInterceptor', function ($rootScope, $q, $window, $cookies) {
     return {

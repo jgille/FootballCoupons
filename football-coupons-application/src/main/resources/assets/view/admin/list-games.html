@@ -1,0 +1,16 @@
+<div class="col-md-6">
+    <table class="table">
+        <tbody>
+        <tr ng-repeat="gameDescription in allGameDescriptions">
+            <td>{{gameDescription.game_id}}</td>
+            <td>{{gameDescription.game_name}}</td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="#/admin/games/edit-game/{{gameDescription.game_id}}">Redigera</a>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger">Ta bort</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

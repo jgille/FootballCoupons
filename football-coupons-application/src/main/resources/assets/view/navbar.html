@@ -18,17 +18,24 @@
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
             <ul class="nav navbar-nav navbar-left">
                 <li ng-show="user.isLoggedIn" class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Spel 1<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown">Välj spel<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li ng-repeat="game in games"><a>{{game.name}}</a></li>
-                        <li ng-show="user.isAdminUser" class="divider"></li>
-                        <li ng-show="user.isAdminUser"><a href="#/create-game">Nytt spel</a></li>
                     </ul>
                 </li>
                 <li ng-show="user.isLoggedIn"><a href="#/play"><i class="fa fa-shield"></i>Spela</a></li>
                 <li ng-show="user.isLoggedIn"><a href="#/toplist"><i class="fa fa-shield"></i>Topplista</a></li>
                 <li ng-show="user.isLoggedIn"><a href="#/all"><i class="fa fa-shield"></i>Alla rader</a></li>
                 <li ng-show="user.isLoggedIn"><a href="#/settings"><i class="fa fa-shield"></i>Inställningar</a></li>
+
+                <li ng-show="user.isAdminUser" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/admin/games/create-game">Nytt spel</a></li>
+                        <li><a href="#/admin/games/list-games">Alla spel</a></li>
+                    </ul>
+                </li>
+
                 <li ng-show="user.isLoggedIn"><a href="#" ng-click="logout()"><i class="fa fa-shield"></i>Logga ut</a>
                 </li>
                 <li ng-hide="user.isLoggedIn"><a href="/api/login"><i class="fa fa-shield"></i>Logga in</a></li>

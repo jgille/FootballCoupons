@@ -7,9 +7,17 @@ app.config(function($routeProvider) {
             templateUrl : 'view/home.html',
             controller  : 'FootballCouponsController'
         })
-        .when('/create-game', {
-            templateUrl : 'view/create-game.html',
+        .when('/admin/games/create-game', {
+            templateUrl : 'view/admin/create-game.html',
             controller  : 'FootballCouponsAdminController'
+        })
+        .when('/admin/games/list-games', {
+            templateUrl : 'view/admin/list-games.html',
+            controller  : 'FootballCouponsAdminController'
+        })
+        .when('/admin/games/edit-game/:game_id', {
+            templateUrl : 'view/admin/edit-game.html',
+            controller  : 'GameDetailController'
         })
 
 });
