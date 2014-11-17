@@ -1,9 +1,11 @@
 package org.jon.ivmark.footballcoupons.application.game.domain.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.joda.time.DateTime;
 import org.jon.ivmark.footballcoupons.application.game.domain.valueobjects.ValueObject;
 
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include= JsonTypeInfo.As.PROPERTY, property="@class")
 public class AbstractDomainEvent<T extends DomainEventType> extends ValueObject implements DomainEvent<T> {
 
     private final String aggregateId;

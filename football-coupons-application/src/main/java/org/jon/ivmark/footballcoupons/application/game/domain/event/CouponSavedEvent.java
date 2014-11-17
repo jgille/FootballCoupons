@@ -30,8 +30,8 @@ public class CouponSavedEvent extends AbstractDomainEvent<GameEventType> impleme
     }
 
     @JsonProperty("coupon_id")
-    public CouponId getCouponId() {
-        return couponId;
+    public String getCouponId() {
+        return couponId.getValue();
     }
 
     @JsonProperty("coupon_name")

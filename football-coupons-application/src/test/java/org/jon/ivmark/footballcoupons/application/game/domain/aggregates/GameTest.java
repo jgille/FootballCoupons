@@ -128,7 +128,7 @@ public class GameTest {
         assertThat(uncommitedEvents, hasSize(2));
         CouponSavedEvent couponSavedEvent = (CouponSavedEvent) uncommitedEvents.get(1);
         assertThat(couponSavedEvent.getAggregateId(), is(gameId.getValue()));
-        assertThat(couponSavedEvent.getCouponId(), is(couponId));
+        assertThat(couponSavedEvent.getCouponId(), is(couponId.getValue()));
         assertThat(couponSavedEvent.getEventType(), is(GameEventType.COUPON_SAVED));
         assertThat(couponSavedEvent.getTimestamp(), notNullValue());
         assertThat(couponSavedEvent.getCouponMustBeSubmittedBefore(), is(mustBeSubmittedBefore));

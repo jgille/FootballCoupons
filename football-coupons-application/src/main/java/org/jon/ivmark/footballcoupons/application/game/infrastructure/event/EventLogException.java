@@ -4,4 +4,8 @@ public class EventLogException extends RuntimeException {
     public EventLogException(String message, Exception cause) {
         super(message, cause);
     }
+
+    public EventLogException(String message) {
+        super(message);
+    }
 }
