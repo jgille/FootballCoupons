@@ -23,6 +23,7 @@ import org.jon.ivmark.footballcoupons.application.game.domain.event.GameEvent;
 import org.jon.ivmark.footballcoupons.application.game.infrastructure.CachingEventBasedGameRepository;
 import org.jon.ivmark.footballcoupons.application.game.infrastructure.InMemoryGameRepository;
 import org.jon.ivmark.footballcoupons.application.game.infrastructure.event.FileBasedEventLog;
+import org.jon.ivmark.footballcoupons.application.game.infrastructure.event.SimpleEventHandler;
 import org.jon.ivmark.footballcoupons.application.game.resources.CouponResource;
 import org.jon.ivmark.footballcoupons.application.game.resources.GameResource;
 import org.jon.ivmark.footballcoupons.application.game.service.GameServiceImpl;
@@ -65,6 +66,8 @@ public class FootballCouponsApplication extends Application<FootballCouponsConfi
 
         EventLog<GameEvent> eventLog = new FileBasedEventLog<>(new File(configuration.games.dataDir, "events"),
                                                                environment.getObjectMapper());
+        eventLog.replayEvents(new SimpleEventHandler());
+
         InMemoryGameRepository cache = new InMemoryGameRepository();
         GameRepository gameRepository = new CachingEventBasedGameRepository(cache, eventLog);
         GameService gameService = new GameServiceImpl(gameRepository);
