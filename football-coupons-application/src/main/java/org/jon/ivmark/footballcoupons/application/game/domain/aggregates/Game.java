@@ -6,6 +6,7 @@ import org.jon.ivmark.footballcoupons.application.domain.aggregate.AggregateRoot
 import org.jon.ivmark.footballcoupons.application.game.domain.event.CouponSavedEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.GameCreatedEvent;
 import org.jon.ivmark.footballcoupons.application.game.domain.event.GameEvent;
+import org.jon.ivmark.footballcoupons.application.game.domain.event.MatchDto;
 import org.jon.ivmark.footballcoupons.application.game.domain.exception.NoSuchCouponException;
 import org.jon.ivmark.footballcoupons.application.game.domain.valueobjects.CouponId;
 import org.jon.ivmark.footballcoupons.application.game.domain.valueobjects.GameId;
@@ -39,7 +40,19 @@ public class Game extends AggregateRoot<GameId> {
         }
         coupons.put(couponId, coupon);
         addEvent(new CouponSavedEvent(getGameId(), couponId, now(), coupon.getCouponName(),
-                                      coupon.getCouponMustBeSubmittedBefore(), coupon.getMatches()));
+                                      coupon.getCouponMustBeSubmittedBefore(), toMatchDtos(coupon.getMatches())));
+    }
+
+    private List<MatchDto> toMatchDtos(List<Match> matches) {
+        List<MatchDto> dtos = new ArrayList<>(matches.size());
+        for (Match match : matches) {
+            MatchDto matchDto = new MatchDto();
+            matchDto.match_index = match.getMatchId().getMatchIndex();
+            matchDto.home_team = match.getHomeTeam();
+            matchDto.away_team = match.getAwayTeam();
+            matchDto.matchResult = match.getMatchResult();
+        }
+        return dtos;
     }
 
     public List<Coupon> getSortedCoupons() {

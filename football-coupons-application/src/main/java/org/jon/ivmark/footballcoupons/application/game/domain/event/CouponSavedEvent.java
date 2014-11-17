@@ -12,8 +12,7 @@ public class CouponSavedEvent extends AbstractDomainEvent<GameEventType> impleme
     private final CouponId couponId;
     private final String couponName;
     private final DateTime couponMustBeSubmittedBefore;
-    // TODO: Don't use matches directly
-    private final List<Match> matches;
+    private final List<MatchDto> matches;
 
     public CouponSavedEvent(
             @JsonProperty("aggregate_id") GameId gameId,
@@ -21,7 +20,7 @@ public class CouponSavedEvent extends AbstractDomainEvent<GameEventType> impleme
             @JsonProperty("timestamp") DateTime savedAt,
             @JsonProperty("coupon_name") String couponName,
             @JsonProperty("must_be_submitted_before") DateTime couponMustBeSubmittedBefore,
-            @JsonProperty("matches") List<Match> matches) {
+            @JsonProperty("matches") List<MatchDto> matches) {
         super(gameId.getValue(), GameEventType.COUPON_SAVED, savedAt);
         this.couponId = couponId;
         this.couponName = couponName;
@@ -45,7 +44,7 @@ public class CouponSavedEvent extends AbstractDomainEvent<GameEventType> impleme
     }
 
     @JsonProperty("matches")
-    public List<Match> getMatches() {
+    public List<MatchDto> getMatches() {
         return matches;
     }
 }
